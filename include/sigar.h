@@ -70,11 +70,11 @@ typedef long sigar_int64_t;
 
 typedef unsigned int sigar_uint32_t;
 
-typedef unsigned long long sigar_uint64_t;
+typedef unsigned long sigar_uint64_t;
 
 typedef int sigar_int32_t;
 
-typedef long long sigar_int64_t;
+typedef long sigar_int64_t;
 
 #endif
 
