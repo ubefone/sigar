@@ -143,6 +143,27 @@
 #define KI_FLAG ki_flag
 #define KI_START ki_start
 
+#elif defined(__OpenBSD__)
+
+#define KI_FD   p_fd
+#define KI_PID  p_pid
+#define KI_PPID p_ppid
+#define KI_PRI  p_priority
+#define KI_NICE p_nice
+#define KI_COMM p_comm
+#define KI_STAT p_stat
+#define KI_UID  kp_eproc.e_pcred.p_ruid
+#define KI_GID  kp_eproc.e_pcred.p_rgid
+#define KI_EUID kp_eproc.e_pcred.p_svuid
+#define KI_EGID kp_eproc.e_pcred.p_svgid
+#define KI_SIZE XXX
+#define KI_RSS  kp_eproc.e_vm.vm_rssize
+#define KI_TSZ  kp_eproc.e_vm.vm_tsize
+#define KI_DSZ  kp_eproc.e_vm.vm_dsize
+#define KI_SSZ  kp_eproc.e_vm.vm_ssize
+#define KI_FLAG p_flag
+#define KI_START kp_proc.p_starttime
+
 #elif defined(DARWIN) || defined(SIGAR_FREEBSD4) || defined(__OpenBSD__) || defined(__NetBSD__)
 
 #define KI_FD   kp_proc.p_fd
@@ -1802,7 +1823,7 @@ int sigar_proc_env_get(sigar_t *sigar, sigar_pid_t pid,
         return SIGAR_EPERM_KMEM;
     }
 
-    pinfo = kvm_getprocs(sigar->kmem, KERN_PROC_PID, pid, &num);
+    pinfo = kvm_getprocs(sigar->kmem, KERN_PROC_PID, pid, sizeof(struct kinfo_proc), &num);
     if (!pinfo || (num < 1)) {
         return errno;
     }
