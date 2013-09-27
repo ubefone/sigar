@@ -145,6 +145,9 @@
 
 #elif defined(__OpenBSD__)
 
+#include <sys/proc.h>
+#include <sys/sysctl.h>
+
 #define KI_FD   p_fd
 #define KI_PID  p_pid
 #define KI_PPID p_ppid
@@ -1068,7 +1071,7 @@ int sigar_os_proc_list_get(sigar_t *sigar,
 static int sigar_get_pinfo(sigar_t *sigar, sigar_pid_t pid)
 {
 #if defined(__OpenBSD__) || defined(__NetBSD__)
-    int mib[] = { CTL_KERN, KERN_PROC2, KERN_PROC_PID, 0, sizeof(*sigar->pinfo), 1 };
+    int mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, 0, sizeof(*sigar->pinfo), 1 };
 #else
     int mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, 0 };
 #endif
