@@ -45,11 +45,7 @@ enum {
     KOFFSET_MAX
 };
 
-#if defined(__OpenBSD__) || defined(__NetBSD__)
-typedef struct kinfo_proc2 bsd_pinfo_t;
-#else
 typedef struct kinfo_proc bsd_pinfo_t;
-#endif
 
 struct sigar_t {
     SIGAR_T_BASE;
