@@ -482,6 +482,8 @@ int sigar_mem_get(sigar_t *sigar, sigar_mem_t *mem)
 
 #ifdef DARWIN
     mib[1] = HW_MEMSIZE;
+#elif defined(HW_PHYSMEM64)
+    mib[1] = HW_PHYSMEM64;
 #else
     mib[1] = HW_PHYSMEM;
 #endif
@@ -513,19 +515,37 @@ int sigar_mem_get(sigar_t *sigar, sigar_mem_t *mem)
         return status;
     }
     mem->free = vmstat.free;
-    kern = vmstat.inactive;
+    // kern = vmstat.inactive;
+    
+    {
+        struct vmtotal vmdata;
+        unsigned long pagesize = getpagesize();
+        
+        mib[0] = CTL_VM;
+        mib[1] = VM_METER;
+        len = sizeof(vmdata);
+        if (sysctl(mib, NMIB(mib), &vmdata, &len, NULL, 0) < 0) {
+            return errno;
+        }
+        
+        mem->actual_free = vmdata.t_free * pagesize;
+        mem->actual_used = vmdata.t_rm * pagesize;
+        mem->used = vmdata.t_arm * pagesize;
+    }
 #  if defined(__OpenBSD__)
-    kern += vmstat.vnodepages + vmstat.vtextpages;
+    // kern += vmstat.vnodepages + vmstat.vtextpages;
 # elif defined(__NetBSD__)
     kern += vmstat.filepages + vmstat.execpages;
 #  endif
     kern *= sigar->pagesize;
 #endif
 
-    mem->used = mem->total - mem->free;
 
+#if ! defined(__OpenBSD__)
+    mem->used = mem->total - mem->free;
     mem->actual_free = mem->free + kern;
     mem->actual_used = mem->used - kern;
+#endif
 
     sigar_mem_calc_ram(sigar, mem);
 
