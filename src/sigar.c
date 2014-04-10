@@ -1625,7 +1625,9 @@ int sigar_net_interface_config_get(sigar_t *sigar, const char *name,
                                   ifr_s_addr(ifr));
         }
 
-#if defined(SIOCGIFHWADDR)
+#if defined(sun)
+        // TODO: find what the hell this should be
+#elif defined(SIOCGIFHWADDR)
         if (!ioctl(sock, SIOCGIFHWADDR, &ifr)) {
             get_interface_type(ifconfig,
                                ifr.ifr_hwaddr.sa_family);
