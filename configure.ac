@@ -2,7 +2,7 @@ dnl ... hmm ... we have to duplicate the data below again
 AC_INIT(libsigar, 1.6.2)
 AC_CONFIG_SRCDIR(src/sigar.c)
 dnl AC_CONFIG_HEADERS(src/config.h)
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE
 AC_CANONICAL_HOST
 
 dnl for sigar_version_autoconf.c.in
